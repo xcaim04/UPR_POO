@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Confirmación de Reserva{% endblock %}
+
+{% block content %}
+<div class="confirmacion">
+    <h1>¡Reserva Confirmada!</h1>
+    <p>Gracias por reservar con nosotros, {{ reserva.nombre }}.</p>
+    
+    <div class="reserva-detalle">
+        <h2>Detalles de tu reserva:</h2>
+        <p><strong>Número de reserva:</strong> #{{ reserva.id }}</p>
+        <p><strong>Fecha:</strong> {{ reserva.fecha }}</p>
+        <p><strong>Hora:</strong> {{ reserva.hora }}</p>
+        <p><strong>Personas:</strong> {{ reserva.personas }}</p>
+        <p><strong>Mesa:</strong> {{ reserva.mesa }} ({{ reserva.tipo_mesa }})</p>
+        <p><strong>Precio:</strong> ${{ "%.2f"|format(reserva.precio) }}</p>
+        <p><strong>Fecha de reservación:</strong> {{ reserva.fecha_reserva }}</p>
+    </div>
+    
+    <a href="{{ url_for('home') }}" class="btn">Volver al Inicio</a>
+</div>
+{% endblock %}
