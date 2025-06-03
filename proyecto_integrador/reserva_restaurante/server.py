@@ -4,7 +4,12 @@ from classes.VIP import VIP
 from classes.Familiar import Familiar
 from datetime import datetime
 
+from flask import flash, redirect, url_for
+
+import re
+
 app = Flask(__name__)
+app.secret_key = 'PanConPerro1234*@'
 
 mesas_disponibles = [
     Pareja("Mesa Romántica 1"),
@@ -31,13 +36,31 @@ def reservar():
         personas = int(request.form['personas'])
         mesa_id = int(request.form['mesa'])
 
+
+        if not nombre.strip() or not re.fullmatch('^[a-zA-ZáéíóúñÁÉÍÓÚÑ\s]+$', nombre):
+            flash('❌ Nombre invalido', 'error')
+            return redirect(url_for('reservar'))
+
+        patron = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(patron, email):
+            flash('❌ Email invalido', 'error')
+            return redirect(url_for('reservar'))
+
+        anio = int(fecha.split('-')[0])
+
+        if anio != datetime.now().year:
+            flash('❌ Fecha invalida', 'error')
+            return redirect(url_for('reservar'))
+
         if mesa_id < 0 or mesa_id >= len(mesas_disponibles):
-            return "Mesa no válida", 400
+            flash('❌ Mesa invalida', 'error')
+            return redirect(url_for('reservar'))
 
         mesa = mesas_disponibles[mesa_id]
 
         if personas > mesa.capacidad:
-            return f"Esta mesa solo tiene capacidad para {mesa.capacidad} personas", 400
+            flash('❌ Esta mesa solo tiene capacidad para {mesa.capacidad} personas', 'error')
+            return redirect(url_for('reservar'))
 
         reserva = {
             'id': len(reservas) + 1,
@@ -56,7 +79,6 @@ def reservar():
         mesas_disponibles.remove(mesa)
         return redirect(url_for('confirmacion', reserva_id=reserva['id']))
 
-    # GET - Mostrar formulario
     return render_template('reservar.html', mesas=mesas_disponibles)
 
 

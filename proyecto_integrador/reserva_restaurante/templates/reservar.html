@@ -3,46 +3,52 @@
 {% block title %}Reservar Mesa{% endblock %}
 
 {% block content %}
-<h1>Reservar Mesa</h1>
 
-<form method="POST" class="reserva-form">
-    <div class="form-group">
-        <label for="nombre">Nombre completo:</label>
-        <input type="text" id="nombre" name="nombre" required>
-    </div>
-    
-    <div class="form-group">
-        <label for="email">Correo electrónico:</label>
-        <input type="email" id="email" name="email" required>
-    </div>
-    
-    <div class="form-group">
-        <label for="fecha">Fecha de reserva:</label>
-        <input type="date" id="fecha" name="fecha" required min="{{ now }}">
-    </div>
-    
-    <div class="form-group">
-        <label for="hora">Hora de reserva:</label>
-        <input type="time" id="hora" name="hora" required min="12:00" max="23:00">
-    </div>
-    
-    <div class="form-group">
-        <label for="personas">Número de personas:</label>
-        <input type="number" id="personas" name="personas" min="1" required>
-    </div>
-    
-    <div class="form-group">
-        <label for="mesa">Seleccione mesa:</label>
-        <select id="mesa" name="mesa" required>
-            <option value="" disabled selected>Seleccione una mesa</option>
-            {% for mesa in mesas %}
-            <option value="{{ loop.index0 }}">
-                {{ mesa.nombre }} ({{ mesa.tipo_mesa }}) - {{ mesa.capacidad }} personas - ${{ "%.2f"|format(mesa.precio_reserva) }}
-            </option>
-            {% endfor %}
-        </select>
-    </div>
-    
-    <button type="submit" class="btn">Confirmar Reserva</button>
-</form>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="alert">{{ message }}</div>
+    {% endfor %}
+
+
+    <section class="formulario">
+        <form method="post" class="reserva-form">
+            <div class="form-group">
+                <label for="nombre">Nombre completo:</label>
+                <input type="text" id="nombre" name="nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha">Fecha de reserva:</label>
+                <input type="date" id="fecha" name="fecha" required min="{{ now }}">
+            </div>
+
+            <div class="form-group">
+                <label for="hora">Hora de reserva:</label>
+                <input type="time" id="hora" name="hora" required min="12:00" max="23:00">
+            </div>
+
+            <div class="form-group">
+                <label for="personas">Número de personas:</label>
+                <input type="number" id="personas" name="personas" min="1" max="12" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mesa">Seleccione mesa:</label>
+                <select id="mesa" name="mesa" required>
+                    <option value="" disabled selected>Seleccione una mesa</option>
+                    {% for mesa in mesas %}
+                    <option value="{{ loop.index0 }}">
+                        {{ mesa.nombre }} ({{ mesa.tipo_mesa }}) - {{ mesa.capacidad }} personas - ${{ "%.2f"|format(mesa.precio_reserva) }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn">Confirmar Reserva</button>
+        </form>
+    </section>
 {% endblock %}
